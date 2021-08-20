@@ -1,0 +1,4 @@
+Trek,700
+Santa Cruz,1000
+Schwin,250
+Specialized,1000
