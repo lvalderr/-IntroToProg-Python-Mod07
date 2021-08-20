@@ -1,6 +1,6 @@
 ## Files and Exceptions
 #### Luis Valderrama
-#### 08/14/2021
+#### 08/19/2021
 #### IT FDN 110 A
 #### Module 07
 #### [GitHub Repository](https://github.com/lvalderr/-IntroToProg-Python-Mod07) 
@@ -41,7 +41,7 @@ As mentioned in prior documents, the first part of the script outlines not only 
 **Figure 1.1: Script Header and Objective**
 
 ### 1.2.	Pseudo-Code
-Before developing the script, the steps are outlined in the form of Pseudo-Code (Figure 1.2) to help translate the objective into the programing code and develop a usable program. In this example, there are 12 core steps that may expand into sub-steps as the script develops.
+Before developing the script, the steps are outlined in the form of Pseudo-Code (Figure 1.2) to help translate the objective into the programing code and develop a usable program. In this example, there are 5 core steps that may expand into sub-steps as the script develops.
 
 ```markdown
 # Pseudo-Code:
@@ -52,16 +52,17 @@ Before developing the script, the steps are outlined in the form of Pseudo-Code 
 # Input/Output -------------------------------------------------------------------------------- #
 # Step 3 - set up presentation, IO functions -------------------------------------------------- #
 # Main Body of the Script --------------------------------------------------------------------- #
-# Step 4 - When the program starts, load data from BikeInventory.txt
-# Step 4 - Display a menu of choices to the user
-# Step 5 Calling the function to display menu of options
-# Step 6 Calling the function to display current inventory
-# Step 7 Calling the function to enter new data to list
-# Step 8 Calling the function to remove data from list
-# Step 9 Calling the function to save data from list to .txt and "pickling" data to .dat file
-# Step 10 Calling the function to reload data from .txt file to list
-# Step 11 Calling the function to "unpickle" data from .dat file to list
-# Step 12 Ending the program and exit
+# Step 4 - When the program starts, load data from ToDoFile.txt ------------------------------- #
+# Step 5 - Calling the Functions to: ---------------------------------------------------------- #
+# Display a menu of choices to the user
+# Display menu of options
+# Display current inventory
+# Enter new data to list
+# Remove data from list
+# Save data from list to .txt and "pickling" data to .dat file
+# Reload data from .txt file to list
+# "Unpickle" data from .dat file to list
+# End the program and exit
 ```
 **Figure 1.2: Pseudo-Code**
 
@@ -74,11 +75,8 @@ import sys
 pickle = ""
 pickleFile = "BikeInventoryPickle.dat"  # This is the pickle file.
 strFileName = "BikeInventory.txt"  # The name of the data file
-objFile = None  # An object that represents a file
-dicRow = {}  # A row of data separated into elements of a dictionary {Bike, Value}
 lstTable = []  # A list that acts as a 'table' of rows
 strChoice = ""  # Captures the user option selection
-strBike = ""  # Captures the user inventory data
 ```
 **Figure 1.3: Declaring Variables and Constants**
 
@@ -99,9 +97,7 @@ Figure 1.5: Class IO (Inputs/Outputs)
 ### 1.6.	Loading Data from Text File to the Table
 When the program starts it opens the BikeInventory.txt and loads the two-column content into a list held in a table named **lstTable** as shown in (Figure 1.6.a).
 
-The function is defined using def followed by the name of the function, in this case **read_data_from_text_file** and the variable given is **file_name** which represents the text file **BikeInventory.txt** where the list of bikes is saved. The parameters are entered as well as a return which is this example is the **lstTable**. The actual function code is entered to open the .txt file, retrieve the data, and place it in the **lstTable** in the form of append. The .txt file is then closed, and a return will display the items in the lstTable. The function is encased in a Try/Except error handling to prevent the program to error and crash if the user makes the wrong entry. _“An exception is an event, which occurs during the execution of a program that disrupts the normal flow of the program's instructions. In general, when a Python script encounters a situation that it cannot cope with, it raises an exception. An exception is a Python object that represents an error._
-
-_When a Python script raises an exception, it must either handle the exception immediately otherwise it terminates and quits.” “If you have some suspicious code that may raise an exception, you can defend your program by placing the suspicious code in a try: block. After the try: block, include an except: statement, followed by a block of code which handles the problem as elegantly as possible”_ (https://www.tutorialspoint.com/python/python_exceptions), (external site).
+The function is defined using def followed by the name of the function, in this case **read_data_from_text_file** and the variable given is **file_name** which represents the text file **BikeInventory.txt** where the list of bikes is saved. The parameters are entered as well as a return which is this example is the **lstTable**. The actual function code is entered to open the .txt file, retrieve the data, and place it in the **lstTable** in the form of append. The .txt file is then closed, and a return will display the items in the lstTable. 
 
 ```markdown
 @staticmethod
@@ -111,30 +107,32 @@ def read_data_from_text_file(file_name):
     :param file_name: (string) strFileName = BikeInventory.txt
     :return: (list) dictionary rows
     """
-    try:
-        lstTable = []
-        objFile = open(file_name, "r")
-    except IOError:
-        print('\nThere is no file associated with this application. ')
-        input("\nPress Enter to exit.")
-        sys.exit()
-    for row in objFile:
+    list_of_rows.clear()
+objFile = open(file_name, "r")
+for row in objFile:
+    if "," in row:
         lstRow = row.split(",")
         dicRow = {"Bike": lstRow[0].strip(), "Value": lstRow[1].strip()}
-        lstTable.append(dicRow)
-    objFile.close()
-    return lstTable
+        list_of_rows.append(dicRow)
+objFile.close()
+return list_of_rows, 'Success'
 ```
 **Figure 1.6.a: Class Processor. read_data_from_text_file**
 
-The **Class Processor. read_data_from_text_file** function is called outside of the While loop containing the Menu of Options. (Figure 1.6.b.). Additionally, the variable **strFileName** represents the **BikeInventory.txt** (Figure 1.6.c) where the information is held and will be loaded to the list and displayed on the screen when the user enters option 1. 
+The **Class Processor. read_data_from_text_file** function is called outside of the While loop containing the Menu of Options. (Figure 1.6.b.). Additionally, the variable **strFileName** represents the **BikeInventory.txt** (Figure 1.6.c) where the information is held and will be loaded to the list and displayed on the screen when the user enters option 1. The function is encased in a Try/Except error handling to prevent the program to error and crash if the file does not exist. _“An exception is an event, which occurs during the execution of a program that disrupts the normal flow of the program's instructions. In general, when a Python script encounters a situation that it cannot cope with, it raises an exception. An exception is a Python object that represents an error._
+
+_When a Python script raises an exception, it must either handle the exception immediately otherwise it terminates and quits.” “If you have some suspicious code that may raise an exception, you can defend your program by placing the suspicious code in a try: block. After the try: block, include an except: statement, followed by a block of code which handles the problem as elegantly as possible” https://www.tutorialspoint.com/python/python_exceptions, (external site). I find the tutorial linked helpful because it provides definitions, various examples, and exception name & descriptions._
+
 
 ```markdown
-lstTable = Processor.read_data_from_text_file(strFileName)
+try:
+    lstTable, status = Processor.read_data_from_text_file(strFileName, lstTable)
+except FileNotFoundError:
+    IO.input_press_to_continue('File not found. Please select option 4 to save data and continue.')
 ```
 **Figure 1.6.b: Calling the function. read_data_from_text_file**!
 
-![figure 1 6 c](https://user-images.githubusercontent.com/83881803/129451379-d7e8128d-c3ce-4b7a-8bce-265517497360.png)
+![figure 1 6c](https://user-images.githubusercontent.com/83881803/130173975-552a1808-2b1f-4ae8-a9d9-a0c2d5abe249.png)
 
 **Figure 1.6.c: View of BikeInventory.txt content**
 
@@ -198,7 +196,7 @@ The functions previously described are called at the beginning of the **while(Tr
 while True:
     try:
 
-# Step 5 Calling the function to display menu of options
+        # Display menu of options to the user
         IO.print_menu_of_Options()
         strChoice = IO.input_menu_choice()
 
@@ -225,7 +223,7 @@ def print_current_inventory_in_list(list_of_rows):
     :return: Nothing
     """
     print("******* The current inventory: *******")
-    for row in lstTable:  # Displaying rows below in the form of a vertical list
+    for row in list_of_rows:  # Displaying rows below in the form of a vertical list
         print(row["Bike"] + ',' + row["Value"])  # Unpacking
     print("*******************************************")
     print()  # Add an extra line for looks
@@ -244,7 +242,7 @@ if strChoice == 1:
 
 Displayed below in (Figure2.1.c.) is the program as it runs in PyCharm and in Command Prompt after the functions are called as previously mentioned.
 
-![figure 2 1 c](https://user-images.githubusercontent.com/83881803/129451797-a6e708ec-c09f-44c9-9c08-242aadd9770d.png)
+![figure 2 1 c](https://user-images.githubusercontent.com/83881803/130174467-52ff67b9-6adb-4723-b094-f699cab8205e.png)
 
 **Figure 2.1.c.: Results from Menu Option 1 displayed in PyCharm and Command Prompt**
 
@@ -305,7 +303,7 @@ elif strChoice == 2:
 
 Displayed below in (Figure2.2.d.) is the program as it runs in PyCharm and in Command Prompt after the functions are called as previously mentioned. 
 
-![figure 2 2 d](https://user-images.githubusercontent.com/83881803/129452425-a24141e8-03c7-4391-89c7-af07fe8eb747.png)
+![figure 2 2 d](https://user-images.githubusercontent.com/83881803/130174719-8c9075bb-c13e-4df4-9e99-05c7b6cd3beb.png)
 
 **Figure 2.2.d.: Results from Menu Option 2 displayed in PyCharm and Command Prompt**
 
@@ -328,7 +326,7 @@ def remove_data_from_list(list_of_rows):
         if term.lower() == "exit":
             break
         for bike in lstTable:
-        if term in bike["Bike"]:  # If the bike entered by the user matches the name in the list then proceed
+            if term in bike["Bike"]:  # If the bike entered by the user matches the name in the list then proceed
                 print(f"Removing {bike['Bike']}...")  # Print a message "item found" and processing removal
                 list_of_rows.remove(bike)  # The item is removed from the table
                 break
@@ -337,24 +335,7 @@ def remove_data_from_list(list_of_rows):
 ```
 **Figure 2.3.a.: Class Processor.remove_data_from_list (Menu Option 3)**
 
-The Input/Output function is defined as **remove_data_from_list** with parameter **term** (Figure 2.3.b). The function gets one input from the user, and the processing function previously mentioned will run through the matching, and removal process. 
-
-```markdown
-@staticmethod
-def remove_data_from_list(term):
-    """ Removes bikes and values entered by the user
-
-    :term: (string) this is the item the user wants to remove
-    :return: (string) Bike and its corresponding value
-    """
-    try:
-        term: input("Confirm the bike you want to delete or type 'exit' to return to Menu of Options: ")
-    except ValueError:
-        print('Invalid input')
-```
-**Figure 2.3.b.: IO.remove_data_from_list (Menu Option 3)**
-
-The functions previously described are called within the **while(True)** loop when the user enters “3” in the **Processor.remove_data_to_list** which removes item entered by the user from the **lstTable**. The last function called is **IO.input_press_to_continue()** in order to pause the program until the user presses Enter to proceed. (Figure 2.3.c.)
+The functions previously described are called within the **while(True)** loop when the user enters “3” in the **Processor.remove_data_to_list** which removes item entered by the user from the **lstTable**. The last function called is **IO.input_press_to_continue()** in order to pause the program until the user presses Enter to proceed. (Figure 2.3.b.)
 
 ```markdown
 elif strChoice == 3:
@@ -362,7 +343,7 @@ elif strChoice == 3:
     IO.input_press_to_continue()
     continue
 ```
-**Figure 2.3.c.: Calling the function (Menu Option 3)**
+**Figure 2.3.b.: Calling the function (Menu Option 3)**
 
 Displayed below in (Figure2.3.d.) is the program as it runs in PyCharm and in Command Prompt after the functions are called as previously mentioned. 
 
@@ -399,7 +380,23 @@ def write_data_from_list_to_text_file(file_name, list_of_rows):
 ```
 **Figure 2.4.a: Class Processor.write_data_from_list_to_text_file (Option 4)**
 
-The function previously described is called within the **while(True)** loop when the user enters “4” in the **Processor.write_data_from_list_to_text_file**. The program also calls the **IO.print_current_inventory_in_list** function which displays the current bikes and values. Alternatively, the program saves the data to a .dat file which is also known as “pickling” data. (Figure 2.4.b.) _“The pickle module implements binary protocols for serializing and de-serializing a Python object structure. “Pickling” is the process whereby a Python object hierarchy is converted into a byte stream, and “unpickling” is the inverse operation, whereby a byte stream (from a binary file or bytes-like object) is converted back into an object hierarchy. Pickling (and unpickling) is alternatively known as “serialization”, “marshalling,” 1 or “flattening”. (https://docs.python.org/3/library/pickle.html)_ (external site). I find the linked helpful because it provides a simple explanation of what pickling is and what it does.
+Alternatively, the program saves the data to a .dat file which is also known as “pickling” data. The processing function is defined as write_data_from_list_to_pickle_file with the variable, pickling and list_of_rows in the form of string. The function itself opens the binary BikeInventoryPickle.dat file and saves the data from the bikes and values list. The program then closes the .dat file and prints the message with confirmation the data has been saved. (Figure 2.4.b.) _“The pickle module implements binary protocols for serializing and de-serializing a Python object structure. “Pickling” is the process whereby a Python object hierarchy is converted into a byte stream, and “unpickling” is the inverse operation, whereby a byte stream (from a binary file or bytes-like object) is converted back into an object hierarchy. Pickling (and unpickling) is alternatively known as “serialization”, “marshalling,” 1 or “flattening”. https://docs.python.org/3/library/pickle.html_ (external site). I find the linked document helpful because it provides a simple explanation of what pickling is and what it does.
+
+```markdown
+@staticmethod
+def write_data_from_list_to_pickle_file(pickling, list_of_rows):
+    """ Writes data from list to text file
+    :param pickling: (string) strFileName = BikeInventory.txt
+    :param list_of_rows: (list) you want filled with file data
+    """
+    import pickle
+    pickleFileReader = open(pickling, "wb")
+    pickle.dump(list_of_rows, pickleFileReader)
+    pickleFileReader.close()
+```
+**Figure 2.4.b: Class Processor.write_data_from_list_to_pickle_file (Option 4)**
+
+The function previously described is called within the while(True) loop when the user enters “4” in the **Processor.write_data_from_list_to_text_file**. The program also calls the **IO.print_current_inventory_in_list** function which displays the current bikes and values. The program also saves the data to the .dat. (Figure 2.4.c.)
 
 ```markdown
 elif strChoice == 4:
@@ -416,25 +413,19 @@ elif strChoice == 4:
         IO.input_press_to_continue()
     continue
 ```
-**Figure 2.4.b: Calling the function (Option 4)**
+**Figure 2.4.c: Calling the function (Option 4)**
 
-Displayed below in (Figure2.4.c.) is the program as it runs in PyCharm and in Command Prompt after the functions are called as previously mentioned. 
+Displayed below in (Figure2.4.d.) is the program as it runs in PyCharm and in Command Prompt after the functions are called as previously mentioned. 
 
-![figure 2 4 c view of option 4](https://user-images.githubusercontent.com/83881803/129452687-a169c1c9-65a4-4f2c-a267-36bcd9645826.png)
+![figure 2 4 d view of option 4](https://user-images.githubusercontent.com/83881803/130175592-274e391f-6357-4c5f-a9e3-4e83117a73c2.png)
 
-**Figure 2.4.c: View of the Option 4 as it runs in PyCharm and Command Prompt**
+**Figure 2.4.d: View of the Option 4 as it runs in PyCharm and Command Prompt**
 
-To view the saved data simply open the BikeInventory.txt. (Figure 2.4.d)
+To view the saved data simply open the BikeInventory.txt and BikeInventoryPickle.dat. (Figure 2.4.e)
 
-![figure 2 4 d view of the txt file](https://user-images.githubusercontent.com/83881803/129452697-c5e87a21-edd2-4a98-8cb0-2656b29ee487.png)
+![figure 2 4 e](https://user-images.githubusercontent.com/83881803/130175688-c186d33f-c8cb-4cec-8278-31c2beed72e1.png)
 
-**Figure 2.4.d: View of the BikeInventory.txt content**
-
-To view the saved in the BikeInventory.dat, you may open the file with Notepad. (Figure 2.4.e)
-
-![figure 2 4 e view of the dat file](https://user-images.githubusercontent.com/83881803/129452741-b3b6a62a-b268-45de-a505-bd6ea1211e75.png)
-
-**Figure 2.4.e: Figure 2.4.e: View of the BikeInventoryPickle.dat content**
+**Figure 2.4.e: View of the BikeInventory.txt and BikeInventoryPickle.dat content**
 
 ### 2.5.	Reload Data from .txt File (Menu Option 5)
 In this section we examine the programing to execute option 5 from the Menu of Options (Figure 2.5.a)
@@ -446,9 +437,13 @@ elif strChoice == 5:
     print("This action will overwrite all unsaved inventory!")
     strAcceptOrDecline = input("Update data without saving? type 'y' or 'n' ")
     if strAcceptOrDecline.lower() == 'y':
-        lstTable.clear()
-        lstTable = Processor.read_data_from_text_file(strFileName)
+        try:
+            Processor.read_data_from_text_file(strFileName, lstTable)
+        except FileNotFoundError:
+            IO.input_press_to_continue("File not found. Save file before performing reload")
+
         IO.print_current_inventory_in_list(lstTable)
+        IO.input_press_to_continue()
     else:
         input("File no updated. Press Enter to go back to Menu of Options")
         IO.print_menu_of_Options()
@@ -465,7 +460,7 @@ Displayed below in (Figure2.5.b.) is the program as it runs in PyCharm and in Co
 ### 2.6.	Reload Data form .dat file “unpickling” (Menu Option 6)
 In this section we examine the programing to execute option 4 from the Menu of Options (Figure 2.6.a)
 
-The function is defined using def followed by the name of the function, in this case **read_data_from_pickle_file** and the variable given is **pickling** which represents the binary file **BikeInventoryPickle.dat** where the list of bikes is saved. The actual function code is entered to open the .dat file, retrieve and display the data. 
+The function is defined using **def** followed by the name of the function, in this case **read_data_from_pickle_file** and the variable given is **pickling** which represents the binary file **BikeInventoryPickle.dat** where the list of bikes is saved. The actual function code is entered to open the .dat file, retrieve and display the data. 
 
 ```markdown
 @staticmethod
@@ -476,35 +471,34 @@ def read_data_from_pickle_file(pickling):
     :return: (list) dictionary rows
     """
     import pickle
-    print('\nUnpickling Bike Inventory.')
-    pickleFile = open(pickling, "rb")
-    pickleFileData = pickle.load(pickleFile)  # Error indicating 'str' object has no attribute 'load'
-    print(pickleFileData)
-    pickleFile.close()
+print('\nUnpickling Bike Inventory.')
+pickleFileReader = open(pickling, "rb")
+pickleFileData = pickle.load(pickleFileReader)  # Error indicating 'str' object has no attribute
+print(pickleFileData)
+pickleFileReader.close()
 ```
 **Figure 2.6.a.: Display Option 6 as it runs in PyCharm and Command Prompt**
 
 When the user enters 6 in the **IO.input_menu_choice()** the program calls the function **lstTable = Processor.read_data_from_pickle_file(pickleFile)** to reload the information from the **BikeInventoryPickle.dat** into the list table. The program then displays the data by way of calling the function **IO.print_current_inventory_in_list(lstTable)**. The last function called is **IO.input_press_to_continue()** in order to pause the program until the user presses Enter to proceed.
 
 ```markdown
-# Step 11 Calling the function to "unpickle" data from .dat file to list
-        elif strChoice == 6:
-            print("This action will overwrite all unsaved inventory!")
-            strAcceptOrDecline = input("Update data without saving? type 'y' or 'n' ")
-            if strAcceptOrDecline.lower() == 'y':
-                lstTable.clear()
-                lstTable = Processor.read_data_from_pickle_file(pickleFile)
+elif strChoice == 6:
+    print("This action will overwrite all unsaved inventory!")
+    strAcceptOrDecline = input("Update data without saving? type 'y' or 'n' ")
+    if strAcceptOrDecline.lower() == 'y':
+        lstTable.clear()
+        Processor.read_data_from_pickle_file(pickleFile)
 
-            else:
-                input("File no updated. Press Enter to go back to Menu of Options")
-                IO.print_menu_of_Options()
-            continue
+    else:
+        input("File no updated. Press Enter to go back to Menu of Options")
+        IO.print_menu_of_Options()
+    continue
 ```
 **Figure 2.6.b.: Calling the function (Option 6)**
 
 Displayed below in (Figure2.6.c.) is the program as it runs in PyCharm and in Command Prompt after the functions are called as previously mentioned.
 
-![figure 2 6 c display option 6](https://user-images.githubusercontent.com/83881803/129452923-b77189e8-0420-481c-b441-5a1ec793035f.png)
+![figure 2 6 c](https://user-images.githubusercontent.com/83881803/130176050-13edb245-a51a-4878-9a5f-77aed3150713.png)
 
 **Figure 2.6.c.: Display Option 6 as it runs in PyCharm and Command Prompt**
 
